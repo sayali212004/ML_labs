@@ -1,0 +1,85 @@
+import pandas as pd
+import numpy as np
+
+df = pd.read_csv('Admission_Predict.csv')
+
+df.columns
+
+df.shape
+
+#decision tree algo is explicit feature selection algo ie which feature is imp n not
+df.head()
+
+from sklearn.preprocessing import Binarizer
+bi = Binarizer(threshold=0.75)
+df['Chance of Admit ']=bi.fit_transform(df[['Chance of Admit ']])
+
+df.head()
+
+#x input variable
+x= df.drop('Chance of Admit ',axis=1)
+#axis=1 shows it is col
+y=df['Chance of Admit ']
+
+x
+
+y
+
+y=y.astype('int')
+#change dtype
+#y is series ie col is series
+
+y
+
+#shows enties in y
+import seaborn as sns
+
+sns.countplot(x=y);
+
+y.value_counts()#in numeric form
+
+#data preparation / train test split/ cross validation
+from sklearn.model_selection import train_test_split
+x_train, x_test, y_train, y_test = train_test_split(x,y,random_state=0, test_size=0.25)
+
+x_train.shape
+
+x_test.shape
+
+x_test
+
+#import the class
+from sklearn.tree import DecisionTreeClassifier
+classifier = DecisionTreeClassifier(random_state=0)
+
+#model train
+classifier.fit(x_train, y_train)
+
+y_pred = classifier.predict(x_test)
+
+result=pd.DataFrame({
+    'actual':y_test,
+    'predicted':y_pred
+})
+
+result
+
+from sklearn.metrics import ConfusionMatrixDisplay, accuracy_score
+
+from sklearn.metrics import classification_report
+#using we can see prperties like precision , recall ,f1
+
+ConfusionMatrixDisplay.from_predictions(y_test, y_pred)
+
+accuracy_score(y_test, y_pred)
+
+print(classification_report(y_test, y_pred))
+
+#lets test aur model
+new = [[247,316,105,3,3.0,3.5,8.73,0]]
+classifier.predict(new)
+
+from sklearn.tree import plot_tree
+import matplotlib.pyplot as plt
+plt.figure(figsize=(12,12))
+plot_tree(classifier,fontsize=8, filled=True);
