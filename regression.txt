@@ -1,0 +1,93 @@
+#using linearity of data we can make regression model of data
+#using ip, op datas linearity we can make predictions and model
+import pandas as pd
+
+pip install seaborn
+
+
+import matplotlib.pyplot as plt #visualisation
+import seaborn as sns #visualisation of regression
+
+df=pd.read_csv('temperatures.csv')
+
+df.head()
+
+#ip data
+x = df['YEAR']
+#op data
+y=df['OCT']
+
+#plt.figure(figsize=(16,9)) #aspect ratoi
+plt.title('temp plot of india')
+plt.xlabel('year')
+plt.ylabel('annual avg temp')
+plt.scatter(x,y) #plot graph
+
+#when we input any data it should be 2D ie in rows and cols
+#if not then reshape
+#convert in array then reshape
+#this is requirement of py library and not of ml
+x.shape
+
+x = x.values #values convert series into array in 1d or 2d
+x=x.reshape(117,1)
+x.shape
+x
+
+#sklearn lib has prebuild algo's
+from sklearn.linear_model import LinearRegression
+
+#this all processes are store in classesformat so when we have to use it make obj
+regressor=LinearRegression()
+
+regressor.fit(x,y) #mtd call (ip, op)
+
+regressor.coef_ #slope or coeffi
+
+regressor.intercept_ #value of y intercept ie Y=mx+c ,model parameter 
+
+regressor.predict([[2024]]) #predi of temp
+
+predicted=regressor.predict(x)
+
+predicted
+
+y
+import numpy as np
+
+#mse mean absolute error
+#ie diff in actual and predicted
+np.mean(abs(y-predicted))    #abs shows absolute value ony not -ve
+
+#or
+
+from sklearn.metrics import mean_absolute_error
+mean_absolute_error(y,predicted)
+
+#mean squared error
+np.mean((y-predicted)**2)
+
+#or
+
+from sklearn.metrics import mean_squared_error
+mean_squared_error(y,predicted)
+
+#R square matrix/error , to find linearity in data
+from sklearn.metrics import r2_score
+r2_score(y,predicted)
+
+#or
+
+regressor.score(x,y)
+
+#plt.figure(figsize=(16,9))
+plt.title('temp plot of india')
+plt.xlabel('year')
+plt.ylabel('annual avg temp')
+plt.scatter(x,y,label = 'actual', color='g')
+plt.plot(x,predicted, label = 'predicted', color='r')
+plt.legend()
+sns.regplot(x='YEAR', y='ANNUAL', data=df)
+
+
+
