@@ -1,0 +1,40 @@
+import pandas as pd
+import numpy as np
+
+df= pd.read_csv('SMSSpamCollection', sep='\t', names=['label','text'])
+
+
+
+df
+
+df.info()
+
+df.groupby('label').describe()
+df['spam'] = df['label'].apply(lambda x:1 if x=='spam' else 0)
+df.head()
+new_df = df[['label','text','spam']]
+
+new_df.head()
+
+from sklearn.model_selection import train_test_split
+x_train,x_test,y_train,y_test=train_test_split(df.text,df.spam)
+from sklearn.feature_extraction.text import CountVectorizer
+v=CountVectorizer()
+x_train_count=v.fit_transform(x_train.values)
+x_train_count.toarray()[:2]
+
+print(v)
+print(df.text)
+print(df.spam)
+
+from sklearn.naive_bayes import MultinomialNB
+model=MultinomialNB()
+model.fit(x_train_count,y_train)
+
+emails=["How are you brother?", "Free entry"]
+
+email_count=v.transform(emails)
+model.predict(email_count)
+
+x_test_count=v.transform(x_test)
+model.score(x_test_count,y_test)
